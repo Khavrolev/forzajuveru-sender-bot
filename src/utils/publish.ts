@@ -5,6 +5,11 @@ import { targetGroup } from "../const/vk";
 import { store } from "../store/store";
 import { PublicationStatus } from "../types/stepper";
 
+const sendPhotoWithBigText = async (image: string, message: string) => {
+  await bot.sendPhoto(targetChannel, image);
+  await bot.sendMessage(targetChannel, message);
+};
+
 export const publishNews = async (chatId: number) => {
   if (!store.message) {
     bot.sendMessage(chatId, "Невозможно опубликовать пустую новость");
@@ -24,8 +29,9 @@ export const publishNews = async (chatId: number) => {
         from_group: 1,
         message: store.message
       }),
-      bot.sendMessage(targetChannel, store.message)
-      // bot.sendPhoto(targetChannel, store.image, { caption: store.message })
+      store.message.length > 1024
+        ? sendPhotoWithBigText(store.image, store.message)
+        : bot.sendPhoto(targetChannel, store.image, { caption: store.message })
     ]);
 
     return PublicationStatus.PUBLISHED;

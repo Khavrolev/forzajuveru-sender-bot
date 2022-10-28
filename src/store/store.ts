@@ -13,5 +13,5 @@ const defaultStore: Store = {
   message: null,
   image: null
 };
-export const setDefaultStore = () => (store = defaultStore);
+export const setDefaultStore = () => (store = { ...defaultStore });
 export let store: Store = setDefaultStore();

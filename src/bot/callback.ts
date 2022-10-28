@@ -13,10 +13,11 @@ import { bot } from "./telegram";
 import { vk } from "./vk";
 
 const callbackOnText = (message: Message) => {
-  console.log(message);
+  // console.log(message);
   const text = message.text;
   const chatId = message.chat.id;
-
+  console.log(store.status);
+  console.log(store.step);
   if (text === startCommand) {
     return bot.sendMessage(
       chatId,
@@ -46,7 +47,7 @@ const callbackOnText = (message: Message) => {
     return publishNewsInProcess(message);
   }
 
-  bot.sendMessage(chatId, "Привет, дорогой друг! Команда не распознана");
+  bot.sendMessage(chatId, "Команда не распознана");
 };
 
 export default callbackOnText;
