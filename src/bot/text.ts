@@ -1,6 +1,8 @@
 import { Message } from "node-telegram-bot-api";
-import { availableChats, targetChannel } from "../const/chat";
+import { availableChats, targetChannel } from "../const/telegram";
+import { targetGroup } from "../const/vk";
 import { bot } from "./bot";
+import { vk } from "./vk";
 
 const callbackOnText = (message: Message) => {
   const text = message.text;
@@ -17,6 +19,7 @@ const callbackOnText = (message: Message) => {
     );
   }
 
+  vk.wall.post({ owner_id: targetGroup, from_group: 1, message: text });
   bot.sendMessage(targetChannel, text);
 };
 
