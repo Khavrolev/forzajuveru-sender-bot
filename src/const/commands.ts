@@ -1,3 +1,2 @@
-export const publishNews = "/news";
-export const backToThePreviousStep = "/back";
-export const stopPublishing = "/stop";
+export const publishNewsCommand = "/news";
+export const stopPublishingCommand = "/stop";

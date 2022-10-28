@@ -1,3 +1,13 @@
 import { PublicationStatus } from "../types/stepper";
 
-export const store = { status: PublicationStatus.NOTHING };
+interface Store {
+  status: PublicationStatus;
+  message: string | null;
+}
+
+const defaultStore: Store = {
+  status: PublicationStatus.NOTHING,
+  message: null
+};
+export const setDefaultStore = () => (store = defaultStore);
+export let store: Store = setDefaultStore();
