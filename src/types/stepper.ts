@@ -4,5 +4,8 @@ export enum PublicationStatus {
 }
 
 export enum NewsStepper {
-  TEXT = "TEXT"
+  STARTED,
+  TEXT,
+  IMAGE,
+  FINISHED
 }

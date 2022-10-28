@@ -10,4 +10,4 @@ bot.setMyCommands([
   { command: stopPublishingCommand, description: "Сбросить публикацию" }
 ]);
 
-bot.on("text", callbackOnText);
+bot.on("message", callbackOnText);
