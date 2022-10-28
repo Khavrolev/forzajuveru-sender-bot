@@ -1,15 +1,17 @@
-import { PublicationStatus } from "../types/stepper";
+import { ContentStatus } from "../types/stepper";
 
 interface Store {
-  status: PublicationStatus;
+  status: ContentStatus;
   step: number;
   message: string | null;
+  image: string | null;
 }
 
 const defaultStore: Store = {
-  status: PublicationStatus.NOTHING,
+  status: ContentStatus.NOTHING,
   step: 0,
-  message: null
+  message: null,
+  image: null
 };
 export const setDefaultStore = () => (store = defaultStore);
 export let store: Store = setDefaultStore();

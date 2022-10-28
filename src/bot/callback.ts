@@ -7,13 +7,13 @@ import {
 import { availableChats, targetChannel } from "../const/telegram";
 import { targetGroup } from "../const/vk";
 import { setDefaultStore, store } from "../store/store";
-import { PublicationStatus } from "../types/stepper";
+import { ContentStatus } from "../types/stepper";
 import { publishNewsInProcess } from "../utils/news";
 import { bot } from "./telegram";
 import { vk } from "./vk";
 
 const callbackOnText = (message: Message) => {
-  // console.log(message);
+  console.log(message);
   const text = message.text;
   const chatId = message.chat.id;
 
@@ -38,19 +38,15 @@ const callbackOnText = (message: Message) => {
       "Публикация прекращена. Если нужно, начните заново"
     );
   }
-  console.log(store.status);
+
   if (
-    (text === publishNewsCommand &&
-      store.status === PublicationStatus.NOTHING) ||
-    store.status === PublicationStatus.NEWS
+    (text === publishNewsCommand && store.status === ContentStatus.NOTHING) ||
+    store.status === ContentStatus.NEWS
   ) {
     return publishNewsInProcess(message);
   }
 
   bot.sendMessage(chatId, "Привет, дорогой друг! Команда не распознана");
-
-  // vk.wall.post({ owner_id: targetGroup, from_group: 1, message: text });
-  // bot.sendMessage(targetChannel, text);
 };
 
 export default callbackOnText;
