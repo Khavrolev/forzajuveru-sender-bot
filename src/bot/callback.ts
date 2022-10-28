@@ -15,7 +15,7 @@ const callbackOnText = (message: Message) => {
   if (!availableChats.includes(chatId)) {
     return bot.sendMessage(
       chatId,
-      "Из данного чата посылать сообщения запрещено"
+      "Из данного чата посылать сообщения боту запрещено"
     );
   }
 
