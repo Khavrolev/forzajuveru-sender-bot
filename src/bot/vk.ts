@@ -1,5 +1,9 @@
-import { API } from "vk-io";
+import { API, Upload } from "vk-io";
 
-export const vk = new API({
+export const vkApi = new API({
   token: process.env.VK_TOKEN as string
+});
+
+export const vkUpload = new Upload({
+  api: vkApi
 });

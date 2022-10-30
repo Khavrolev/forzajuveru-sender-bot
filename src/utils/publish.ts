@@ -1,13 +1,16 @@
 import { bot } from "../bot/telegram";
-import { vk } from "../bot/vk";
+import { vkApi, vkUpload } from "../bot/vk";
 import { targetChannel } from "../const/telegram";
 import { targetGroup } from "../const/vk";
 import { store } from "../store/store";
 import { PublicationStatus } from "../types/stepper";
 
-const sendPhotoWithBigText = async (image: string, message: string) => {
-  await bot.sendPhoto(targetChannel, image);
-  await bot.sendMessage(targetChannel, message);
+const sendPhotoWithBigText = async (message: string, image?: string) => {
+  const text = image ? `<a href="${image}">&#8205;</a>${message}` : message;
+
+  await bot.sendMessage(targetChannel, text, {
+    parse_mode: "HTML"
+  });
 };
 
 export const publishNews = async (chatId: number) => {
@@ -23,14 +26,18 @@ export const publishNews = async (chatId: number) => {
   }
 
   try {
+    const urlImg = await bot.getFileLink(store.image);
+    const attachment = await vkUpload.wallPhoto({ source: { value: urlImg } });
+
     await Promise.all([
-      vk.wall.post({
+      vkApi.wall.post({
         owner_id: targetGroup,
         from_group: 1,
-        message: store.message
+        message: store.message,
+        attachment
       }),
       store.message.length > 1024
-        ? sendPhotoWithBigText(store.image, store.message)
+        ? sendPhotoWithBigText(store.message, attachment.largeSizeUrl)
         : bot.sendPhoto(targetChannel, store.image, { caption: store.message })
     ]);
 
