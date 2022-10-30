@@ -1,3 +1,4 @@
+import { User } from "node-telegram-bot-api";
 import { ContentStatus } from "../types/stepper";
 
 interface Store {

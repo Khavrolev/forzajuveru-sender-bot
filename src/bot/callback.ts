@@ -4,21 +4,17 @@ import {
   startCommand,
   stopPublishingCommand
 } from "../const/commands";
-import { availableChats, targetChannel } from "../const/telegram";
-import { targetGroup } from "../const/vk";
 import { setDefaultStore, store } from "../store/store";
 import { ContentStatus } from "../types/stepper";
 import { publishNewsInProcess } from "../utils/news";
+import { isTextMatchesCommand } from "../utils/telegram";
 import { bot } from "./telegram";
-import { vk } from "./vk";
 
 const callbackOnText = (message: Message) => {
-  // console.log(message);
   const text = message.text;
   const chatId = message.chat.id;
-  console.log(store.status);
-  console.log(store.step);
-  if (text === startCommand) {
+
+  if (isTextMatchesCommand(startCommand, text)) {
     return bot.sendMessage(
       chatId,
       "Привет, дорогой друг! Посылка сообщений доступна только в специальной группе, удостоверься, что ты пишешь в ней"
@@ -32,7 +28,7 @@ const callbackOnText = (message: Message) => {
   //   );
   // }
 
-  if (text === stopPublishingCommand) {
+  if (isTextMatchesCommand(stopPublishingCommand, text)) {
     setDefaultStore();
     return bot.sendMessage(
       chatId,
@@ -41,7 +37,8 @@ const callbackOnText = (message: Message) => {
   }
 
   if (
-    (text === publishNewsCommand && store.status === ContentStatus.NOTHING) ||
+    (isTextMatchesCommand(publishNewsCommand, text) &&
+      store.status === ContentStatus.NOTHING) ||
     store.status === ContentStatus.NEWS
   ) {
     return publishNewsInProcess(message);
