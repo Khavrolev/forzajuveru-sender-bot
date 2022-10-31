@@ -6,7 +6,7 @@ import {
 } from "../const/commands";
 import { setDefaultStore, store } from "../store/store";
 import { ContentStatus } from "../types/stepper";
-import { publishNewsInProcess } from "../utils/news";
+import { publishNewsInProcess } from "../utils/stepper/stepper";
 import { isTextMatchesCommand } from "../utils/telegram";
 import { bot } from "./telegram";
 

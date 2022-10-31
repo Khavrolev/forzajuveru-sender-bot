@@ -4,9 +4,14 @@ export enum ContentStatus {
 }
 
 export enum NewsStepper {
-  STARTED,
+  STARTED = 1,
   TEXT,
   IMAGE,
   TIMER,
   FINISHED
+}
+
+export enum StepAction {
+  REPEAT = 1,
+  NEXT
 }

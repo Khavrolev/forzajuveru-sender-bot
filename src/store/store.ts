@@ -1,4 +1,4 @@
-import { ContentStatus } from "../types/stepper";
+import { ContentStatus, NewsStepper } from "../types/stepper";
 
 interface Store {
   status: ContentStatus;
@@ -10,7 +10,7 @@ interface Store {
 
 const defaultStore: Store = {
   status: ContentStatus.NOTHING,
-  step: 0,
+  step: NewsStepper.STARTED,
   message: null,
   image: null,
   publishDate: null
