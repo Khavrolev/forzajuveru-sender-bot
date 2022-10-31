@@ -1,11 +1,7 @@
 import { Message } from "node-telegram-bot-api";
 import { bot } from "../bot/telegram";
 import { setDefaultStore, store } from "../store/store";
-import {
-  NewsStepper,
-  PublicationStatus,
-  ContentStatus
-} from "../types/stepper";
+import { NewsStepper, ContentStatus } from "../types/stepper";
 import { publishNews } from "./publish";
 
 export const publishNewsInProcess = async (message: Message) => {
@@ -57,12 +53,7 @@ export const publishNewsInProcess = async (message: Message) => {
       break;
     case NewsStepper.FINISHED:
       if (text === "Да") {
-        const publicationStatus = await publishNews(chatId);
-        publicationStatus === PublicationStatus.PUBLISHED &&
-          bot.sendMessage(
-            chatId,
-            "Новость опубликована! Проверь Telegram и VK"
-          );
+        await publishNews(chatId);
       } else {
         bot.sendMessage(chatId, "Новость не опубликована! Начните с начала");
       }

@@ -1,11 +1,16 @@
+import { PhotoAttachment } from "vk-io";
 import { bot } from "../bot/telegram";
 import { vkApi, vkUpload } from "../bot/vk";
 import { targetChannel } from "../const/telegram";
 import { targetGroup } from "../const/vk";
 import { store } from "../store/store";
-import { PublicationStatus } from "../types/stepper";
 
-const sendPhotoWithBigText = async (message: string, image?: string) => {
+const MAX_LENGTH_FOR_PHOTO_WITH_CAPTION_IN_TELEGRAM = 1024;
+
+const sendPhotoWithBigTextToTelegram = async (
+  message: string,
+  image?: string
+) => {
   const text = image ? `<a href="${image}">&#8205;</a>${message}` : message;
 
   await bot.sendMessage(targetChannel, text, {
@@ -13,18 +18,43 @@ const sendPhotoWithBigText = async (message: string, image?: string) => {
   });
 };
 
+const publishNewsToTelegram = async (
+  message: string,
+  imageFromTelegram: string,
+  imageFromVK?: string
+) => {
+  if (message.length > MAX_LENGTH_FOR_PHOTO_WITH_CAPTION_IN_TELEGRAM) {
+    return sendPhotoWithBigTextToTelegram(message, imageFromVK);
+  }
+
+  bot.sendPhoto(targetChannel, imageFromTelegram, {
+    caption: message
+  });
+};
+
+const publishNewsToVK = async (
+  message: string,
+  attachment: PhotoAttachment
+) => {
+  vkApi.wall.post({
+    owner_id: targetGroup,
+    from_group: 1,
+    message,
+    attachment
+  });
+};
+
 export const publishNews = async (chatId: number) => {
   const { message, image } = store[chatId];
 
   if (!message) {
-    bot.sendMessage(chatId, "Невозможно опубликовать пустую новость");
-
-    return PublicationStatus.ERROR;
+    return bot.sendMessage(chatId, "Невозможно опубликовать пустую новость");
   }
   if (!image) {
-    bot.sendMessage(chatId, "Невозможно опубликовать новость без фотографии");
-
-    return PublicationStatus.ERROR;
+    return bot.sendMessage(
+      chatId,
+      "Невозможно опубликовать новость без фотографии"
+    );
   }
 
   try {
@@ -32,25 +62,16 @@ export const publishNews = async (chatId: number) => {
     const attachment = await vkUpload.wallPhoto({ source: { value: urlImg } });
 
     await Promise.all([
-      vkApi.wall.post({
-        owner_id: targetGroup,
-        from_group: 1,
-        message,
-        attachment
-      }),
-      message.length > 1024
-        ? sendPhotoWithBigText(message, attachment.largeSizeUrl)
-        : bot.sendPhoto(targetChannel, image, { caption: message })
+      publishNewsToVK(message, attachment),
+      publishNewsToTelegram(message, image, attachment.largeSizeUrl)
     ]);
 
-    return PublicationStatus.PUBLISHED;
+    bot.sendMessage(chatId, "Новость опубликована! Проверь Telegram и VK");
   } catch (error) {
     console.log(error);
     bot.sendMessage(
       chatId,
       "Произошла какая-то ошибка, новость не опубликована"
     );
-
-    return PublicationStatus.ERROR;
   }
 };

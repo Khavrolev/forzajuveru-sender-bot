@@ -3,11 +3,6 @@ export enum ContentStatus {
   NEWS = "NEWS"
 }
 
-export enum PublicationStatus {
-  PUBLISHED,
-  ERROR
-}
-
 export enum NewsStepper {
   STARTED,
   TEXT,
