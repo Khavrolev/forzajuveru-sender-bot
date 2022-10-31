@@ -34,18 +34,20 @@ const publishNewsToTelegram = async (
 
 const publishNewsToVK = async (
   message: string,
-  attachment: PhotoAttachment
+  attachment: PhotoAttachment,
+  publish_date?: number | null
 ) => {
   vkApi.wall.post({
     owner_id: targetGroup,
     from_group: 1,
     message,
-    attachment
+    attachment,
+    publish_date: publish_date ? publish_date : undefined
   });
 };
 
 export const publishNews = async (chatId: number) => {
-  const { message, image } = store[chatId];
+  const { message, image, publishDate } = store[chatId];
 
   if (!message) {
     return bot.sendMessage(chatId, "Невозможно опубликовать пустую новость");
@@ -62,7 +64,7 @@ export const publishNews = async (chatId: number) => {
     const attachment = await vkUpload.wallPhoto({ source: { value: urlImg } });
 
     await Promise.all([
-      publishNewsToVK(message, attachment),
+      publishNewsToVK(message, attachment, publishDate),
       publishNewsToTelegram(message, image, attachment.largeSizeUrl)
     ]);
 

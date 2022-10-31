@@ -7,5 +7,6 @@ export enum NewsStepper {
   STARTED,
   TEXT,
   IMAGE,
+  TIMER,
   FINISHED
 }

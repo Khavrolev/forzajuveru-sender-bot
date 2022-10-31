@@ -5,13 +5,15 @@ interface Store {
   step: number;
   message: string | null;
   image: string | null;
+  publishDate: number | null;
 }
 
 const defaultStore: Store = {
   status: ContentStatus.NOTHING,
   step: 0,
   message: null,
-  image: null
+  image: null,
+  publishDate: null
 };
 export const setDefaultStore = (chatId: number) =>
   (store[chatId] = { ...defaultStore });

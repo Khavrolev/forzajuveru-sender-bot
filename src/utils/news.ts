@@ -1,3 +1,4 @@
+import { addDays, getUnixTime, isValid, parse } from "date-fns";
 import { Message } from "node-telegram-bot-api";
 import { bot } from "../bot/telegram";
 import { setDefaultStore, store } from "../store/store";
@@ -44,6 +45,37 @@ export const publishNewsInProcess = async (message: Message) => {
 
         return current;
       }, photo[photo.length - 1]).file_id;
+      store[chatId].step = store[chatId].step + 1;
+
+      bot.sendMessage(
+        chatId,
+        'Введи таймер для новости или напиши "Нет" для немедленной публикации',
+        {
+          reply_markup: {
+            one_time_keyboard: true,
+            keyboard: [[{ text: "Нет" }]]
+          }
+        }
+      );
+      break;
+    case NewsStepper.TIMER:
+      if (text === "Нет") {
+        store[chatId].publishDate = null;
+      } else {
+        const now = new Date();
+        const date = text && parse(text, "kk:mm", now);
+
+        if (!date || !isValid(date)) {
+          bot.sendMessage(chatId, "Дата введена некорректно");
+          break;
+        }
+
+        store[chatId].publishDate =
+          getUnixTime(date) - getUnixTime(now) > 0
+            ? getUnixTime(date)
+            : getUnixTime(addDays(date, 1));
+      }
+
       store[chatId].step = store[chatId].step + 1;
 
       bot.sendMessage(
