@@ -48,7 +48,13 @@ export const publishNewsInProcess = async (message: Message) => {
 
       bot.sendMessage(
         chatId,
-        'Напиши "Да", чтобы опубликовать новость в Telegram и VK. Любое другое сообщение отменит публикацию'
+        'Напиши "Да", чтобы опубликовать новость в Telegram и VK. Любое другое сообщение отменит публикацию',
+        {
+          reply_markup: {
+            one_time_keyboard: true,
+            keyboard: [[{ text: "Да" }], [{ text: "Нет" }]]
+          }
+        }
       );
       break;
     case NewsStepper.FINISHED:
