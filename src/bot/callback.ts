@@ -7,7 +7,10 @@ import {
 import { setDefaultStore, store } from "../store/store";
 import { ContentStatus } from "../types/stepper";
 import { publishNewsInProcess } from "../utils/stepper/stepper";
-import { isTextMatchesCommand } from "../utils/telegram";
+import {
+  deleteKeyboardByDefault,
+  isTextMatchesCommand
+} from "../utils/telegram";
 import { bot } from "./telegram";
 
 const callbackOnText = (message: Message) => {
@@ -17,14 +20,16 @@ const callbackOnText = (message: Message) => {
   if (isTextMatchesCommand(startCommand, text)) {
     return bot.sendMessage(
       chatId,
-      "Привет, дорогой друг! Посылка сообщений доступна только в специальной группе, удостоверься, что ты пишешь в ней"
+      "Привет, дорогой друг! Посылка сообщений доступна только в специальной группе, удостоверься, что ты пишешь в ней",
+      deleteKeyboardByDefault
     );
   }
 
   // if (!availableChats.includes(chatId)) {
   //   return bot.sendMessage(
   //     chatId,
-  //     "Из данного чата посылать сообщения боту запрещено"
+  //     "Из данного чата посылать сообщения боту запрещено",
+  deleteKeyboardByDefault;
   //   );
   // }
 
@@ -36,7 +41,8 @@ const callbackOnText = (message: Message) => {
     setDefaultStore(chatId);
     return bot.sendMessage(
       chatId,
-      "Публикация прекращена. Если нужно, начните заново"
+      "Публикация прекращена. Если нужно, начните заново",
+      deleteKeyboardByDefault
     );
   }
 
@@ -48,7 +54,7 @@ const callbackOnText = (message: Message) => {
     return publishNewsInProcess(message);
   }
 
-  bot.sendMessage(chatId, "Команда не распознана");
+  bot.sendMessage(chatId, "Команда не распознана", deleteKeyboardByDefault);
 };
 
 export default callbackOnText;

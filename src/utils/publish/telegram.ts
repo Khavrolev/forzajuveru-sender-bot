@@ -1,5 +1,6 @@
 import { bot } from "../../bot/telegram";
 import { targetChannel } from "../../const/telegram";
+import { deleteKeyboardByDefault } from "../telegram";
 
 const MAX_LENGTH_FOR_PHOTO_WITH_CAPTION_IN_TELEGRAM = 1024;
 

@@ -2,6 +2,7 @@ import { PhotoSize } from "node-telegram-bot-api";
 import { bot } from "../../../bot/telegram";
 import { store } from "../../../store/store";
 import { StepAction } from "../../../types/stepper";
+import { deleteKeyboardByDefault } from "../../telegram";
 
 const isCurrentPhotoSmaller = (biggest: PhotoSize, current: PhotoSize) => {
   if (biggest.file_size && current.file_size) {
@@ -23,7 +24,11 @@ const getIdOfBiggestImage = (photo: PhotoSize[]) => {
 
 export const onImageStep = (chatId: number, photo?: PhotoSize[]) => {
   if (!photo || photo.length === 0) {
-    bot.sendMessage(chatId, "Картинка не прислана. Пришли картинку");
+    bot.sendMessage(
+      chatId,
+      "Картинка не прислана. Пришли картинку",
+      deleteKeyboardByDefault
+    );
     return StepAction.REPEAT;
   }
 
@@ -34,7 +39,6 @@ export const onImageStep = (chatId: number, photo?: PhotoSize[]) => {
     'Введи таймер для новости или напиши "Нет" для немедленной публикации',
     {
       reply_markup: {
-        one_time_keyboard: true,
         keyboard: [[{ text: "Нет" }]]
       }
     }
