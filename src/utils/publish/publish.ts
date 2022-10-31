@@ -1,8 +1,5 @@
-import { PhotoAttachment } from "vk-io";
 import { bot } from "../../bot/telegram";
-import { vkApi, vkUpload } from "../../bot/vk";
-import { targetChannel } from "../../const/telegram";
-import { targetGroup } from "../../const/vk";
+import { vkUpload } from "../../bot/vk";
 import { store } from "../../store/store";
 import { publishNewsToTelegram } from "./telegram";
 import { publishNewsToVK } from "./vk";

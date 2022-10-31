@@ -1,9 +1,6 @@
-import { addDays, getUnixTime, isValid, parse } from "date-fns";
 import { Message } from "node-telegram-bot-api";
-import { bot } from "../../bot/telegram";
 import { setDefaultStore, store } from "../../store/store";
-import { NewsStepper, ContentStatus } from "../../types/stepper";
-import { publishNews } from "../publish/publish";
+import { NewsStepper } from "../../types/stepper";
 import { controlStep } from "../telegram";
 import { onFinishedStep } from "./steps/finished";
 import { onImageStep } from "./steps/image";
