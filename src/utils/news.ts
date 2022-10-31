@@ -13,10 +13,10 @@ export const publishNewsInProcess = async (message: Message) => {
   const photo = message.photo;
   const chatId = message.chat.id;
 
-  switch (store.step) {
+  switch (store[chatId].step) {
     case NewsStepper.STARTED:
-      store.status = ContentStatus.NEWS;
-      store.step = store.step + 1;
+      store[chatId].status = ContentStatus.NEWS;
+      store[chatId].step = store[chatId].step + 1;
 
       bot.sendMessage(chatId, "Введи текст новости");
       break;
@@ -26,8 +26,8 @@ export const publishNewsInProcess = async (message: Message) => {
         break;
       }
 
-      store.message = text;
-      store.step = store.step + 1;
+      store[chatId].message = text;
+      store[chatId].step = store[chatId].step + 1;
 
       bot.sendMessage(chatId, "Пришли картинку");
       break;
@@ -37,7 +37,7 @@ export const publishNewsInProcess = async (message: Message) => {
         break;
       }
 
-      store.image = photo.reduce((biggest, current) => {
+      store[chatId].image = photo.reduce((biggest, current) => {
         if (
           biggest.file_size && current.file_size
             ? biggest?.file_size > current.file_size
@@ -48,7 +48,7 @@ export const publishNewsInProcess = async (message: Message) => {
 
         return current;
       }, photo[photo.length - 1]).file_id;
-      store.step = store.step + 1;
+      store[chatId].step = store[chatId].step + 1;
 
       bot.sendMessage(
         chatId,
@@ -67,7 +67,7 @@ export const publishNewsInProcess = async (message: Message) => {
         bot.sendMessage(chatId, "Новость не опубликована! Начните с начала");
       }
 
-      setDefaultStore();
+      setDefaultStore(chatId);
       break;
   }
 };

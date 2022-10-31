@@ -28,8 +28,12 @@ const callbackOnText = (message: Message) => {
   //   );
   // }
 
+  if (!store[chatId]) {
+    setDefaultStore(chatId);
+  }
+
   if (isTextMatchesCommand(stopPublishingCommand, text)) {
-    setDefaultStore();
+    setDefaultStore(chatId);
     return bot.sendMessage(
       chatId,
       "Публикация прекращена. Если нужно, начните заново"
@@ -38,8 +42,8 @@ const callbackOnText = (message: Message) => {
 
   if (
     (isTextMatchesCommand(publishNewsCommand, text) &&
-      store.status === ContentStatus.NOTHING) ||
-    store.status === ContentStatus.NEWS
+      store[chatId].status === ContentStatus.NOTHING) ||
+    store[chatId].status === ContentStatus.NEWS
   ) {
     return publishNewsInProcess(message);
   }

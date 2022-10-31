@@ -14,31 +14,33 @@ const sendPhotoWithBigText = async (message: string, image?: string) => {
 };
 
 export const publishNews = async (chatId: number) => {
-  if (!store.message) {
+  const { message, image } = store[chatId];
+
+  if (!message) {
     bot.sendMessage(chatId, "Невозможно опубликовать пустую новость");
 
     return PublicationStatus.ERROR;
   }
-  if (!store.image) {
+  if (!image) {
     bot.sendMessage(chatId, "Невозможно опубликовать новость без фотографии");
 
     return PublicationStatus.ERROR;
   }
 
   try {
-    const urlImg = await bot.getFileLink(store.image);
+    const urlImg = await bot.getFileLink(image);
     const attachment = await vkUpload.wallPhoto({ source: { value: urlImg } });
 
     await Promise.all([
       vkApi.wall.post({
         owner_id: targetGroup,
         from_group: 1,
-        message: store.message,
+        message,
         attachment
       }),
-      store.message.length > 1024
-        ? sendPhotoWithBigText(store.message, attachment.largeSizeUrl)
-        : bot.sendPhoto(targetChannel, store.image, { caption: store.message })
+      message.length > 1024
+        ? sendPhotoWithBigText(message, attachment.largeSizeUrl)
+        : bot.sendPhoto(targetChannel, image, { caption: message })
     ]);
 
     return PublicationStatus.PUBLISHED;

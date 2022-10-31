@@ -1,4 +1,3 @@
-import { User } from "node-telegram-bot-api";
 import { ContentStatus } from "../types/stepper";
 
 interface Store {
@@ -14,5 +13,6 @@ const defaultStore: Store = {
   message: null,
   image: null
 };
-export const setDefaultStore = () => (store = { ...defaultStore });
-export let store: Store = setDefaultStore();
+export const setDefaultStore = (chatId: number) =>
+  (store[chatId] = { ...defaultStore });
+export let store: Record<number, Store> = {};
